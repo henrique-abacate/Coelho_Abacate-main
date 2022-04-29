@@ -19,6 +19,24 @@ var melancia;
 var pernalonga;
 var coelho;
 var cortador;
+var salsicha, sadBoy, piscando;
+
+function preload (){
+  parede = loadImage ("background.png");
+  melancia = loadImage ("melon.png");
+  pernalonga = loadImage ("Rabbit-01.png");
+  salsicha = loadAnimation("eat_0.png","eat_1.png","eat_2.png","eat_3.png","eat_4.png");
+  sadBoy = loadAnimation("sad_1.png","sad_2.png","sad_3.png");
+  piscando = loadAnimation("blink_1.png","blink_2.png","blink_3.png");
+
+  //playing e looping
+  salsicha.playing = true;
+  salsicha.looping = false;
+  sadBoy.playing = true;
+  sadBoy.looping = false;
+  piscando.playing = true;
+  piscando.looping = true;
+}
 
 
 function setup() 
@@ -31,9 +49,17 @@ function setup()
   
   rope = new Rope(6,{x:245,y:30});
   
-coelho= createSprite (250,500,10,14);
-coelho.addImage(pernalonga);
-coelho.scale= 0.25; 
+  piscando.frameDelay = 20;
+  salsicha.frameDelay = 30;
+
+  coelho= createSprite (250,500,10,14);
+  //coelho.addImage(pernalonga);
+  coelho.addAnimation('piscando', piscando);
+  coelho.addAnimation('comendo', salsicha);
+  coelho.addAnimation('triste', sadBoy);
+  coelho.changeAnimation('piscando');
+
+  coelho.scale= 0.25; 
 
 cortador = createImg ("cut_btn.png");
 cortador.position (185,35);
@@ -69,17 +95,26 @@ function draw()
 
   drawSprites ()
 }
- function preload (){
-    parede = loadImage ("background.png");
-    melancia = loadImage ("melon.png");
-    pernalonga = loadImage ("Rabbit-01.png");
- }
-
-
+ 
  function cerveja (){
   rope.break ();
   link.cortar ();
   link = null
+}
+
+function bateu(body,sprite){
+  if(body!= null){
+    var d = dist(body.position.x,body.position.y,sprite.position.x,sprite.position.y);
+    if(d<=80){
+      World.remove(engine.world,fruit);
+      fruit = null;
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 }
 
 
