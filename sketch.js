@@ -22,6 +22,7 @@ var cortador;
 var salsicha, sadBoy, piscando;
 var somFundo, somAr, somComendo, somTriste, somCorte;
 var mudo;
+var ventilador;
 
 function preload (){
   parede = loadImage ("background.png");
@@ -87,6 +88,15 @@ function setup()
     density: 0.001
   }
   
+
+  ventilador = createImg("balloon.png")
+ventilador.position (100,175);
+ventilador.size (100,100);
+ventilador.mouseClicked (tornado);
+
+
+
+
   fruit = Bodies.circle(300,300,15,fruit_options);
   
   Matter.Composite.add(rope.body,fruit);
@@ -116,11 +126,12 @@ function draw()
 if (bateu(fruit,coelho)== true )
 {
   coelho.changeAnimation ("comendo");
-
+somComendo.play ();
 
 }
 if(bateu(fruit,ground.body)== true) {
   coelho.changeAnimation ("triste");
+somTriste.play();
 }
 drawSprites ();
 
@@ -129,7 +140,8 @@ drawSprites ();
  function cerveja (){
   rope.break ();
   link.cortar ();
-  link = null
+  link = null;
+somCorte.play ();
 }
 
 function bateu(body,sprite){
@@ -155,6 +167,9 @@ function mutar(){
     somFundo.play();
   }
 }
-
+function tornado (){
+  Matter.Body.applyForce (fruit,{x:0 , y:0}, {x:0.05, y:0.05})
+  somAr.play ()
+}
 
 
