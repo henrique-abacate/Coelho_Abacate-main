@@ -11,14 +11,14 @@ const Composite = Matter.Composite; //ok
 var engine;
 var world;
 var ground;
-var rope;
+var rope, rope2;
 var fruit;
-var link;
+var link, link2;
 var parede;
 var melancia;
 var pernalonga;
 var coelho;
-var cortador;
+var cortador,cortador2;
 var salsicha, sadBoy, piscando;
 var somFundo, somAr, somComendo, somTriste, somCorte;
 var mudo;
@@ -49,7 +49,19 @@ function preload (){
 
 function setup() 
 {
-  createCanvas(500,700);
+ var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+ if(isMobile){
+   canW = displayWidth;
+   canH = displayHeight;
+   createCanvas(canW,canH);
+ }
+ else{
+    canW = windowWidth;
+    canH = windowHeight;
+    createCanvas(canW,canH);
+ }
+ 
+ // createCanvas(500,700);
   frameRate(80); //taxa de frames, geralmente: 30 frames/seg
 
   //som de fundo
@@ -60,7 +72,8 @@ function setup()
   world = engine.world;
   ground = new Ground(200,680,600,20);
   
-  rope = new Rope(6,{x:245,y:30});
+  rope = new Rope(6,{x:225,y:30});
+  rope2 = new Rope(8,{x:315,y:30});
   
   piscando.frameDelay = 20;
   salsicha.frameDelay = 30;
@@ -80,28 +93,33 @@ function setup()
   mudo.size(50,50);
   mudo.mouseClicked(mutar);
 
+
+ //botão para cortar a corda
   cortador = createImg ("cut_btn.png");
   cortador.position (185,35);
   cortador.size (70,70);
   cortador.mouseClicked (cerveja);
+
+  cortador2 = createImg ("cut_btn.png");
+  cortador2.position (285,15);
+  cortador2.size (70,70);
+  cortador2.mouseClicked(cerveja2);
+
+  ventilador = createImg("balloon.png")
+  ventilador.position (100,175);
+  ventilador.size (100,100);
+  ventilador.mouseClicked (tornado);
+
   var fruit_options = {
     density: 0.001
   }
-  
-
-  ventilador = createImg("balloon.png")
-ventilador.position (100,175);
-ventilador.size (100,100);
-ventilador.mouseClicked (tornado);
-
-
-
 
   fruit = Bodies.circle(300,300,15,fruit_options);
   
   Matter.Composite.add(rope.body,fruit);
 
   link = new Link(rope,fruit);
+  link2 = new Link(rope2,fruit);
 
   rectMode(CENTER);
   ellipseMode(RADIUS);
@@ -113,17 +131,17 @@ imageMode (CENTER)
 function draw() 
 {
   background("");
-  image (parede,width/2,height/2, 500,700); 
-  ground.show();
+  image(parede,width/2,height/2, canW,canH); 
+  //ground.show();
   rope.show();
-
+  rope2.show();
 
   if (fruit!=null){
 
   image(melancia,fruit.position.x,fruit.position.y,70,70);
 }  
   Engine.update(engine);
-if (bateu(fruit,coelho)== true )
+if (bateu(fruit,coelho)== true)
 {
   coelho.changeAnimation ("comendo");
 somComendo.play ();
@@ -142,6 +160,13 @@ drawSprites ();
   link.cortar ();
   link = null;
 somCorte.play ();
+}
+
+function cerveja2 (){
+  rope2.break();
+  link2.cortar();
+  link2 = null;
+  somCorte.play();
 }
 
 function bateu(body,sprite){
