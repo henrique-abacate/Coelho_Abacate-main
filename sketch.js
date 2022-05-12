@@ -23,6 +23,9 @@ var salsicha, sadBoy, piscando;
 var somFundo, somAr, somComendo, somTriste, somCorte;
 var mudo;
 var ventilador;
+var cortador3;
+var rope3;
+var link3;
 
 function preload (){
   parede = loadImage ("background.png");
@@ -70,15 +73,17 @@ function setup()
 
   engine = Engine.create();
   world = engine.world;
-  ground = new Ground(200,680,600,20);
+  ground = new Ground(200,canH-20,600,20);
   
   rope = new Rope(6,{x:225,y:30});
   rope2 = new Rope(8,{x:315,y:30});
+   rope3 = new Rope(6,{x:450,y:35});
+ 
   
   piscando.frameDelay = 20;
   salsicha.frameDelay = 30;
 
-  coelho= createSprite (250,500,10,14);
+  coelho= createSprite (250,canH-150,10,14);
   //coelho.addImage(pernalonga);
   coelho.addAnimation('piscando', piscando);
   coelho.addAnimation('comendo', salsicha);
@@ -105,6 +110,11 @@ function setup()
   cortador2.size (70,70);
   cortador2.mouseClicked(cerveja2);
 
+  cortador3 = createImg ("cut_btn.png");
+  cortador3.position (450,35);
+  cortador3.size (70,70);
+  cortador3.mouseClicked (cerveja3);
+
   ventilador = createImg("balloon.png")
   ventilador.position (100,175);
   ventilador.size (100,100);
@@ -120,6 +130,7 @@ function setup()
 
   link = new Link(rope,fruit);
   link2 = new Link(rope2,fruit);
+  link3 = new Link(rope3,fruit);
 
   rectMode(CENTER);
   ellipseMode(RADIUS);
@@ -135,6 +146,7 @@ function draw()
   //ground.show();
   rope.show();
   rope2.show();
+  rope3.show();
 
   if (fruit!=null){
 
@@ -196,5 +208,10 @@ function tornado (){
   Matter.Body.applyForce (fruit,{x:0 , y:0}, {x:0.05, y:0.05})
   somAr.play ()
 }
-
+function cerveja3 (){
+  rope3.break();
+  link3.cortar();
+  link3 = null;
+  somCorte.play();
+}
 
